@@ -27,4 +27,10 @@ abstract class Booster {
         return price;
     }
 
+    @Override
+    public String toString() {
+        return name + " | thrust: " + maxThrust 
+                + " kN | mass: " + fuelCapacity 
+                + " t | price: " + price + " M EUR";
+    }
 }

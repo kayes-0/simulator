@@ -24,4 +24,11 @@ abstract class Mission {
     public double calculateRequiredFuel(Rocket rocket) {
         return calculateFuel(rocket.calculateTotalMass());
     }
+
+    @Override
+    public String toString() {
+        return name + " | crewed required: " + crewed
+                + " | distance: " + distance + " km"
+                + " | fuel coefficient: " + coefficient;
+    }
 }

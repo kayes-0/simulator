@@ -41,4 +41,13 @@ abstract class Launcher {
         return price;
     }
 
+    @Override
+    public String toString() {
+        return name + " | crewed: " + crewed
+                + " | max boosters: " + maxBoosters
+                + " | max fuel: " + maxFuel + " t"
+                + " | max payload: " + maxPayload + " t"
+                + " | price: " + price + " M EUR";
+    }
+
 }

@@ -33,4 +33,11 @@ abstract class Pod {
         return price;
     }
 
+    @Override
+    public String toString() {
+        return name + " | crewed: " + crewed
+                + " | max passengers: " + maxPassengers
+                + " | mass: " + weight + " t"
+                + " | price: " + price + " M EUR";
+    }
 }
