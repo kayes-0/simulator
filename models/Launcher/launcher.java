@@ -16,4 +16,29 @@ abstract class Launcher {
     }
 
     abstract double calculateThrust();
-}      
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isCrewed() {
+        return crewed;
+    }
+
+    public int getMaxBoosters() {
+        return maxBoosters;
+    }
+
+    public double getMaxFuel() {
+        return maxFuel;
+    }
+
+    public double getMaxPayload() {
+        return maxPayload;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+}
