@@ -6,6 +6,14 @@ abstract class Launcher {
     double maxPayload;
     double price;
 
+    /**
+     * @param name        nom du lanceur
+     * @param crewed      si le lanceur est ok pour les vols habités
+     * @param maxBoosters nombre maximum de boosters qu'il peut accueillir
+     * @param maxFuel     capacité maximale en carburant (tonnes)
+     * @param maxPayload  charge utile maximale admissible (tonnes)
+     * @param price       prix de base du lanceur (millions EUR)
+     */
     public Launcher(String name, boolean crewed, int maxBoosters, double maxFuel, double maxPayload, double price) {
         this.name = name;
         this.crewed = crewed;
@@ -15,6 +23,10 @@ abstract class Launcher {
         this.price = price;
     }
 
+    /**
+     * Calcule la poussée totale du lanceur en kilonewtons (kN).
+     * @return poussée en kN
+     */
     abstract double calculateThrust();
 
     public String getName() {

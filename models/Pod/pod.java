@@ -1,3 +1,6 @@
+/**
+ * Classe abstraite représentant une capsule spatiale (habité ou cargo).
+ */
 abstract class Pod {
     String name;
     boolean crewed;
@@ -5,6 +8,13 @@ abstract class Pod {
     double weight;
     double price;
 
+    /**
+     * @param name          nom de la capsule
+     * @param crewed        si la capsule est ok pour l'équipage
+     * @param maxPassengers nombre maximum de passagers
+     * @param weight        masse de la capsule (tonnes)
+     * @param price         prix de la capsule (millions EUR)
+     */
     public Pod(String name, boolean crewed, int maxPassengers, double weight, double price) {
         this.name = name;
         this.crewed = crewed;

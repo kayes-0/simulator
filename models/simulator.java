@@ -3,10 +3,25 @@ import java.time.LocalDateTime;
 import java.util.*;
 import Exception.*;
 
+/* Cœur du simulateur de lancement spatial.
+* Implémente le pattern Singleton pour garantir une instance unique.
+* Gère le menu, le déroulement d'un lancement et la persistance
+* de l'historique dans un fichier texte.
+*/
+
 class Simulator {
+    /**
+     * Probabilité (5%) qu'un lancement échoue de façon aléatoire, indépendamment
+     * des conditions techniques.
+     */
     private static final double RANDOM_FAILURE_RATE = 0.05;
+    /**
+     * Prix du carburant en EUR par tonne. Utilisé pour estimer le coût total du
+     * lancement.
+     */
     private static final double FUEL_PRICE_PER_TON = 1200;
 
+    /** Instance unique du simulateur (pattern Singleton). */
     private static Simulator instance;
 
     private final Scanner scanner = new Scanner(System.in);
@@ -18,11 +33,20 @@ class Simulator {
     private final List<Mission> missions = new ArrayList<>();
     private final List<Launch> history = new ArrayList<>();
 
+    /**
+     * Constructeur privé — accès réservé via {@link #getInstance()}.
+     * Initialise les catalogues et charge l'historique depuis le fichier.
+     */
     private Simulator() {
         loadCatalogs();
         loadHistory();
     }
 
+    /**
+     * Retourne l'instance unique du simulateur.
+     * Crée l'instance à la première invocation (lazy initialization).
+     * @return l'instance Singleton de {@code Simulator}
+     */
     public static Simulator getInstance() {
         if (instance == null) {
             instance = new Simulator();
@@ -30,6 +54,10 @@ class Simulator {
         return instance;
     }
 
+    /**
+     * Boucle principale du simulateur.
+     * Affiche le menu et délègue les actions jusqu'à ce que l'utilisateur quitte.
+     */
     public void start() {
         boolean running = true;
 
@@ -51,6 +79,11 @@ class Simulator {
         }
     }
 
+    /**
+     * Initialise les catalogues d'équipements disponibles :
+     * lanceurs, capsules, boosters et missions.
+     * Appelé une seule fois à la construction du simulateur.
+     */
     private void loadCatalogs() {
         launchers.add(new SaturneV());
         launchers.add(new Ariane5());
@@ -73,6 +106,11 @@ class Simulator {
         missions.add(new Pluto());
     }
 
+    /**
+     * Orchestre le processus de configuration d'un lancement :
+     * sélection du lanceur, de la capsule, des boosters et de la mission.
+     * Lance la simulation et enregistre le résultat dans l'historique.
+     */
     private void startLaunchProcess() {
         Launcher launcher = chooseFromList(launchers, "Choose a launcher");
         Pod pod = chooseFromList(pods, "Choose a pod");
@@ -97,11 +135,24 @@ class Simulator {
         System.out.println(launch);
     }
 
+    /**
+     * Simule le lancement et détermine son succès ou son échec.
+     * Vérifie dans l'ordre :
+     * 1. La capacité carburant du lanceur
+     * 2. La limite de charge utile
+     * 3. Le nombre maximum de boosters autorisés
+     * 4. La compatibilité capsule/mission habitée
+     * 5. Une panne aléatoire avec probabilité {@value #RANDOM_FAILURE_RATE}
+     * @param rocket  la fusée assemblée pour ce lancement
+     * @param mission la mission cible
+     * @return un objet {@link Launch} contenant le résultat et le coût estimé
+     */
     private Launch simulateLaunch(Rocket rocket, Mission mission) {
         boolean success = true;
         String reason = "Launch successful";
 
         double requiredFuel = mission.calculateRequiredFuel(rocket);
+        // Coût total = prix matériel + coût carburant (converti de EUR/t en M EUR)
         double totalCost = rocket.calculateTotalPrice() + (requiredFuel * FUEL_PRICE_PER_TON / 1_000_000);
 
         try {
@@ -118,6 +169,7 @@ class Simulator {
             } else if (mission.isCrewedRequired() && !rocket.getPod().isCrewed()) {
                 success = false;
                 reason = "Pod incompatible with crewed mission";
+                // Anomalie technique imprévue
             } else if (random.nextDouble() < RANDOM_FAILURE_RATE) {
                 success = false;
                 reason = "Unexpected technical anomaly";
@@ -134,10 +186,18 @@ class Simulator {
                 mission,
                 success,
                 reason,
-                totalCost
-        );
+                totalCost);
     }
 
+    /**
+     * Affiche une liste numérotée et invite l'utilisateur à choisir un élément.
+     * La saisie est validée en boucle jusqu'à obtenir un entier dans la plage
+     * valide.
+     * @param <T>   type des éléments de la liste
+     * @param list  liste d'options à présenter
+     * @param title intitulé affiché avant la liste
+     * @return l'élément sélectionné par l'utilisateur
+     */
     private <T> T chooseFromList(List<T> list, String title) {
         System.out.println("\n" + title);
 
@@ -170,6 +230,11 @@ class Simulator {
         }
     }
 
+    /**
+     * Persiste l'historique des lancements dans le fichier {@code history.txt}.
+     * Chaque lancement est sérialisé sur une ligne via {@link Launch#toFileLine()}.
+     * Le fichier est entièrement réécrit à chaque appel.
+     */
     private void saveHistory() {
         try (PrintWriter writer = new PrintWriter(new FileWriter("history.txt"))) {
             for (Launch launch : history) {
@@ -180,6 +245,10 @@ class Simulator {
         }
     }
 
+    /**
+     * Charge l'historique des lancements depuis {@code history.txt} au démarrage.
+     * Chaque ligne est désérialisée via {@link Launch#fromFileLine(String)}.
+     */
     private void loadHistory() {
         File file = new File("history.txt");
 
