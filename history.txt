@@ -1,0 +1,4 @@
+2026-05-05T21:04:08.020976800;Saturne V+Orion;ISS;false;Payload limit exceeded;1910.6856704
+2026-05-05T21:04:26.506176700;Saturne V+Orion;Orbit;false;Payload limit exceeded;1830.134592
+2026-05-05T21:19:11.949114400;Saturne V+Apollo;Pluto;true;Launch successful;1702.161152
+2026-05-06T08:49:05.782441200;SLS+Cargo Dragon;Pluto;false;Not enough fuel capacity;2520.55744
